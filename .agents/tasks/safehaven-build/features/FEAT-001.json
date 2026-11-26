@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Foundation: design tokens, TypeScript types, Zod schemas, Supabase auth helpers, auth guards, UI component library (Button/Card/Badge/Input/Label/Textarea/Select/Alert/LoadingSpinner/EmptyState), Navbar, Footer, and updated root layout. Everything else depends on these.",
+  "status": "pending",
+  "steps": [
+    "Add color design tokens to src/app/globals.css inside the existing @theme inline {} block — after the existing --font-* variables. Add: --color-primary: #0d6e6e; --color-primary-dark: #095555; --color-primary-light: #e0f4f4; --color-secondary: #c17b4a; --color-neutral-50 through --color-neutral-900 in warm gray steps; --color-danger: #dc2626; --color-success: #16a34a; --color-warning: #d97706. DO NOT touch the @import 'tailwindcss'; line or existing font variables.",
+    "Create src/types/index.ts with TypeScript interfaces matching the Supabase schema: Profile, UserRole, AppRole (enum literal union matching app_role values), Report, ReportType, ReportStatus, ReportContact, Case, CaseStatus, CasePriority, CaseNote, ServiceProvider, VerificationStatus, Referral, ReferralStatus, ConsentStatus, AuditLog. Use string literal unions for all enum types.",
+    "Create src/lib/validations/index.ts with Zod v4 schemas (import { z } from 'zod'). Export: directReportSchema (report_type, description, incident_date optional, location_description optional, currently_in_danger bool, consent_to_contact bool, preferred_contact_method optional), thirdPartyReportSchema (description, location_description optional, relationship_to_survivor optional, reporter_name optional, reporter_contact optional), loginSchema (email, password), signupSchema (email, password, full_name, role), caseNoteSchema (content, is_private bool), referralSchema (service_provider_id, notes optional), serviceProviderSchema (name, description, category, contact_email, phone optional, address optional, website optional), contactFormSchema (subject, message, email optional).",
+    "Create src/lib/supabase/auth.ts. Import createClient from @/lib/supabase/server. Export: async getSession() — calls (await supabase).auth.getClaims() and returns the claims/session; async getUser() — returns the user from getClaims result; async getUserRole(userId: string) — queries user_roles table with eq('user_id', userId) and returns the role string or null.",
+    "Create src/lib/auth/index.ts. Import redirect from next/navigation. Import getUser and getUserRole from @/lib/supabase/auth. Export: async requireAuth() — calls getUser(), if null calls redirect('/login'), else returns user; async requireRole(role: AppRole) — calls requireAuth() then getUserRole(), if role doesn't match calls redirect('/').",
+    "Create src/components/ui/Button.tsx. Variants: primary (bg-[--color-primary] text-white hover:bg-[--color-primary-dark]), secondary (bg-transparent border border-[--color-primary] text-[--color-primary]), danger (bg-[--color-danger] text-white), ghost (bg-transparent hover:bg-[--color-neutral-100]). Sizes: sm/md/lg. Accept className prop. Pure presentational — no 'use client' needed.",
+    "Create src/components/ui/Card.tsx, Badge.tsx (variants: default/success/warning/danger/info), Input.tsx (with label prop, error prop, helperText prop), Label.tsx, Textarea.tsx, Select.tsx (with options array prop), Alert.tsx (variants: info/success/warning/danger with icon from lucide-react), LoadingSpinner.tsx, EmptyState.tsx (with icon, title, description, optional action button props). All use Tailwind v4 tokens. These are purely presentational — no 'use client' needed.",
+    "Create src/components/layout/Navbar.tsx as a 'use client' component. Import usePathname from next/navigation and Link from next/link. Nav links: Home (/), Find Support (/find-support), How It Works (/how-it-works), About (/about). Report Abuse link styled as a prominent CTA button (use Button variant primary). Quick-exit button: anchor tag pointing to https://www.google.com with rel='noreferrer' — always visible in top-right, with a distinctive color (bg-red-600 or similar). Mobile hamburger with useState for open/close. Active link: compare pathname to href using usePathname().",
+    "Create src/components/layout/Footer.tsx as a server component (no 'use client'). Links: About, Safety & Privacy (/safety), Find Support, Contact (/contact), Volunteer (/volunteer), Donate (/donate). Include SAFEHAVEN tagline and demo disclaimer: 'This is a demonstration platform. For real emergencies, contact your local emergency services.' Include current year in copyright.",
+    "Update src/app/layout.tsx — READ the file first (it uses LayoutProps<'/'>). Change metadata title to 'SAFEHAVEN' and description to 'A safe platform for reporting gender-based violence and accessing support.' Import Navbar and Footer from @/components/layout and render them in the body around {children}. Preserve: Geist font imports, font variables, LayoutProps<'/'> type, globals.css import, html lang='en', className on html tag."
+  ],
+  "acceptance_criteria": [
+    "npm run build completes with 0 errors",
+    "globals.css has new color tokens inside @theme inline {} without touching @import or font variables",
+    "src/types/index.ts exports all schema-matching interfaces",
+    "src/lib/validations/index.ts exports all 8 schemas and they parse correctly",
+    "src/lib/supabase/auth.ts exports getSession, getUser, getUserRole",
+    "src/lib/auth/index.ts exports requireAuth and requireRole",
+    "All 10 UI components exist in src/components/ui/ and compile",
+    "Navbar renders with Quick Exit button linking to google.com",
+    "Footer renders with demo disclaimer",
+    "Root layout shows Navbar and Footer wrapping page content"
+  ],
+  "verification": [
+    "Run: npm run build from c:\\Users\\betya\\Desktop\\she_hulk\\save_haven — expect 0 errors",
+    "Run: npm run dev, visit http://localhost:3000 — verify Navbar with Quick Exit button, Footer with disclaimer are visible",
+    "Visit http://localhost:3000/supabase-check — verify it still shows 'Supabase connected successfully' (confirms existing files were not broken)"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

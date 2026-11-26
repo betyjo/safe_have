@@ -1,0 +1,7 @@
+{
+  "task_id": "task-safehaven-build",
+  "task_description": "Build the full SAFEHAVEN GBV reporting and support platform on the existing Next.js 16 / Supabase project. Covers foundation (design system, types, auth helpers, UI components, Navbar, Footer), public pages, authentication flows, reporting system (highest priority), role-based dashboards, and support/independence pages.",
+  "status": "pending",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004", "FEAT-005"],
+  "blocked_reason": null
+}
